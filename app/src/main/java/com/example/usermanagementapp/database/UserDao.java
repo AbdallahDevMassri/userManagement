@@ -23,6 +23,11 @@ public interface UserDao {
     @Delete
     void deleteUser(User user);
 
+    @Query("delete from user_table where firstName  = :name")
+    void deleteUserByName(String name);
+
     @Query("SELECT * FROM user_table ORDER BY id ASC")
     LiveData<List<User>> getAllUsers();
+    @Query("select *from user_table where firstName like '%' || :name || '%' ")
+    List<User>searchUsers(String name);
 }
