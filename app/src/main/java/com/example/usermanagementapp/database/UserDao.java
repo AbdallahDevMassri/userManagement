@@ -15,19 +15,28 @@ import java.util.List;
 public interface UserDao {
 
     @Insert
-    void insertUser(User user);
+    void insertUser(User... user);
 
     @Update
-    void updateUser(User user);
+    void updateUser(User... user);
 
     @Delete
-    void deleteUser(User user);
+    void deleteUser(User... user);
 
     @Query("delete from user_table where firstName  = :name")
     void deleteUserByName(String name);
 
+    // get list of the users
     @Query("SELECT * FROM user_table ORDER BY id ASC")
     LiveData<List<User>> getAllUsers();
+   // search user by name
     @Query("select *from user_table where firstName like '%' || :name || '%' ")
-    List<User>searchUsers(String name);
+    LiveData<List<User>>searchUsers(String name);
+   // search category by Id
+    @Query(("select * from user_table where categoryId = :categoryId"))
+    LiveData<List<User>> getUsersByCategory(int categoryId);
+    // search user by Id
+    @Query(("select * from user_table where userID = :userId"))
+    LiveData<List<User>> getUsersById(int userId);
+
 }

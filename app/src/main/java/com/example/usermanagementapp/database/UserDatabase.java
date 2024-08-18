@@ -4,16 +4,19 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverter;
 
+
+import com.example.usermanagementapp.model.Category;
 import com.example.usermanagementapp.model.User;
 
 
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class, Category.class}, version = 1, exportSchema = false)
 
 public abstract class UserDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
+    public abstract CategoryDao categoryDao();
+
 
     private static volatile UserDatabase INSTANCE;
 
@@ -22,7 +25,7 @@ public abstract class UserDatabase extends RoomDatabase {
             synchronized (UserDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    UserDatabase.class, "user_database")
+                                    UserDatabase.class, "my_database")
                             .build();
                 }
             }
