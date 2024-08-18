@@ -3,9 +3,7 @@ package com.example.usermanagementapp.repository;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Delete;
-import androidx.room.Query;
-import androidx.room.Update;
+
 
 import com.example.usermanagementapp.database.CategoryDao;
 import com.example.usermanagementapp.model.Category;
@@ -21,8 +19,6 @@ public class Repository {
 
     UserDao userDao;
     CategoryDao categoryDao;
-//    private final LiveData<List<User>> userList;
-//    private final LiveData<List<Category>> categoryList;
     private final ExecutorService executorService;
 
 
@@ -31,8 +27,6 @@ public class Repository {
         userDao = db.userDao();
         categoryDao = db.categoryDao();
 
-
-//        userList = userDao.getAllUsers();
         executorService = Executors.newSingleThreadExecutor();
     }
 
@@ -52,7 +46,6 @@ public class Repository {
     // delete user by name
     public void deleteUserByName(String name) {
         executorService.execute(() -> userDao.deleteUserByName(name));
-
     }
 
     // get list of the users
@@ -93,11 +86,8 @@ public class Repository {
 
     public void deleteCategory(Category... category) {
         executorService.execute(() -> categoryDao.deleteCategory(category));
-
     }
-
     // delete category by Id
-
     public void deleteCategoryById(String id) {
         executorService.execute(() -> categoryDao.deleteCategoryById(id));
     }
@@ -106,12 +96,10 @@ public class Repository {
     public LiveData<List<Category>> getAllCategories(){
 
         return categoryDao.getAllCategories();
-
     }
     // search category by name
-     public  LiveData<List<Category>>searchCategory(String name){
+     public LiveData<List<Category>>searchCategory(String name){
         return categoryDao.searchCategory(name);
-
     }
 
 

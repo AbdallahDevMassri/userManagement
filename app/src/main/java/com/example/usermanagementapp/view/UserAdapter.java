@@ -5,9 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.usermanagementapp.R;
 import com.example.usermanagementapp.model.User;
 
@@ -21,20 +23,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_user, parent, false);
-        return new UserViewHolder(view);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.user_item, parent, false);
+        return new UserViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        User user = users.get(position);
-        holder.firstName.setText(user.getFirstName());
-        holder.lastName.setText(user.getLastName());
-        holder.email.setText(user.getEmail());
-        // Load image into avatar (e.g., using Glide or Picasso)
+        User currentUser = users.get(position);
+        holder.textViewName.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
+        holder.textViewEmail.setText(currentUser.getEmail());
+        // Load user avatar with Glide
+        Glide.with(holder.itemView.getContext())
+                .load(currentUser.getAvatar())
+                .placeholder(R.drawable.placeholder_avatar)
+                .into(holder.imageViewAvatar);
     }
-
 
     @Override
     public int getItemCount() {
@@ -46,18 +50,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         notifyDataSetChanged();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView firstName;
-        TextView lastName;
-        TextView email;
-        ImageView avatar;
+    static class UserViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textViewName;
+        private final TextView textViewEmail;
+        private final ImageView imageViewAvatar;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            firstName = itemView.findViewById(R.id.text_first_name);
-            lastName = itemView.findViewById(R.id.text_last_name);
-            email = itemView.findViewById(R.id.text_email);
-            avatar = itemView.findViewById(R.id.image_avatar);
+            textViewName = itemView.findViewById(R.id.text_view_name);
+            textViewEmail = itemView.findViewById(R.id.text_view_email);
+            imageViewAvatar = itemView.findViewById(R.id.image_view_avatar);
         }
     }
 }

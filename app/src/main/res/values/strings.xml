@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">UserManagementApp</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="save">Save</string>
+    <string name="avatar_description">User Avatar</string>
+    <string name="add_item">Add Item</string>
 </resources>
