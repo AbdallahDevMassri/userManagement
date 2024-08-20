@@ -32,10 +32,7 @@ public interface UserDao {
    // search user by name
     @Query("select *from user_table where firstName like '%' || :name || '%' ")
     LiveData<List<User>>searchUsers(String name);
-   // search category by Id
-    @Query(("select * from user_table where categoryId = :categoryId"))
-    LiveData<List<User>> getUsersByCategory(int categoryId);
-    // search user by Id
+       // search user by Id
     @Query(("select * from user_table where userID = :userId"))
     LiveData<List<User>> getUsersById(int userId);
 

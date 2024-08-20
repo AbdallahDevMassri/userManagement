@@ -16,10 +16,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".view.CategoryDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.AddEditUserActivity"
             android:exported="false" />
         <activity
-            android:name=".view.AddEditCategoryActivity"
+            android:name=".view.AddCategoryActivity"
             android:exported="false" />
         <activity
             android:name=".view.MainActivity"

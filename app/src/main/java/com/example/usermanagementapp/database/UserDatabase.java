@@ -6,16 +6,15 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 
-import com.example.usermanagementapp.model.Category;
 import com.example.usermanagementapp.model.User;
 
 
-@Database(entities = {User.class, Category.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class}, version = 2, exportSchema = false)
 
 public abstract class UserDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
-    public abstract CategoryDao categoryDao();
+
 
 
     private static volatile UserDatabase INSTANCE;

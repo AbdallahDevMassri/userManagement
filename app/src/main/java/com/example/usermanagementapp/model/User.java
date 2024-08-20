@@ -3,20 +3,11 @@ package com.example.usermanagementapp.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
 
-@Entity(tableName = "user_table", foreignKeys = {
-        @ForeignKey(
-                entity = Category.class,
-                parentColumns = {"id"},
-                childColumns = {"categoryId"},
-                onUpdate = ForeignKey.CASCADE,
-                onDelete = ForeignKey.CASCADE
-        )
-})
+
+@Entity(tableName = "user_table")
 
 public class User {
     @NonNull
@@ -28,16 +19,16 @@ public class User {
     private String lastName;
     private String email;
     private String avatar;
-    private int categoryId;
 
-    public User(int id, String userID, String firstName, String lastName, String email, String avatar, int categoryId) {
+
+    public User(int id, String userID, String firstName, String lastName, String email, String avatar) {
         this.id = id;
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.avatar = avatar;
-        this.categoryId = categoryId;
+
     }
 
     public int getId() {
@@ -88,11 +79,4 @@ public class User {
         this.avatar = avatar;
     }
 
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
 }

@@ -5,12 +5,9 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 
-import com.example.usermanagementapp.database.CategoryDao;
-import com.example.usermanagementapp.model.Category;
 import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.database.UserDao;
 import com.example.usermanagementapp.database.UserDatabase;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,14 +15,14 @@ import java.util.concurrent.Executors;
 public class Repository {
 
     UserDao userDao;
-    CategoryDao categoryDao;
+
     private final ExecutorService executorService;
 
 
     public Repository(Application application) {
         UserDatabase db = UserDatabase.getDatabase(application);
         userDao = db.userDao();
-        categoryDao = db.categoryDao();
+
 
         executorService = Executors.newSingleThreadExecutor();
     }
@@ -60,52 +57,12 @@ public class Repository {
     return userDao.searchUsers(name);
     }
 
-    // search category by Id
-    public LiveData<List<User>> getUsersByCategory(int categoryId) {
 
-    return userDao.getUsersByCategory(categoryId);
-    }
     // search user by Id
 
     public LiveData<List<User>> getUsersById(int userId) {
 
         return getUsersById(userId);
-    }
-
-    // implementation of the category
-
-    public void insertCategory(Category... category) {
-        executorService.execute(() -> categoryDao.insertCategory(category));
-
-    }
-
-    public void updateCategory(Category... category) {
-
-        executorService.execute(() -> categoryDao.updateCategory(category));
-    }
-
-    public void deleteCategory(Category... category) {
-        executorService.execute(() -> categoryDao.deleteCategory(category));
-    }
-    // delete category by Id
-    public void deleteCategoryById(String id) {
-        executorService.execute(() -> categoryDao.deleteCategoryById(id));
-    }
-
-    // get list of the categories
-    public LiveData<List<Category>> getAllCategories(){
-
-        return categoryDao.getAllCategories();
-    }
-    // search category by name
-     public LiveData<List<Category>>searchCategory(String name){
-        return categoryDao.searchCategory(name);
-    }
-
-
-    public LiveData<List<Category>> getCategoryByRating() {
-
-        return categoryDao.getCategoryByRating();
     }
 
 }
