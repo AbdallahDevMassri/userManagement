@@ -5,11 +5,12 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 
 
 @Entity(tableName = "user_table")
 
-public class User {
+public class User implements Serializable {
     @NonNull
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -21,8 +22,7 @@ public class User {
     private String avatar;
 
 
-    public User(int id, String userID, String firstName, String lastName, String email, String avatar) {
-        this.id = id;
+    public User( String userID, String firstName, String lastName, String email, String avatar) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;

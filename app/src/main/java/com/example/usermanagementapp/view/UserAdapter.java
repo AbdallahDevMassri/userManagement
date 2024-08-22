@@ -3,6 +3,7 @@ package com.example.usermanagementapp.view;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,13 +20,14 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private List<User> users = new ArrayList<>();
+    private OnItemClickListener listener;
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.user_item, parent, false);
-        return new UserViewHolder(itemView);
+        return new UserViewHolder(itemView, listener, users);
     }
 
     @Override
@@ -54,12 +56,43 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         private final TextView textViewName;
         private final TextView textViewEmail;
         private final ImageView imageViewAvatar;
+        private final Button buttonEdit;
+        private final Button buttonDelete;
 
-        public UserViewHolder(@NonNull View itemView) {
+        private List<User> users;
+        private OnItemClickListener listener;
+
+        public UserViewHolder(@NonNull View itemView, OnItemClickListener listener, List<User> users) {
             super(itemView);
+            this.listener = listener;
+            this.users = users;
+
             textViewName = itemView.findViewById(R.id.text_view_name);
             textViewEmail = itemView.findViewById(R.id.text_view_email);
             imageViewAvatar = itemView.findViewById(R.id.image_view_avatar);
+            buttonEdit = itemView.findViewById(R.id.button_edit);
+            buttonDelete = itemView.findViewById(R.id.button_delete);
+
+            buttonEdit.setOnClickListener(view -> {
+                if (listener != null && getAbsoluteAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onEditClick(users.get(getAbsoluteAdapterPosition()));
+                }
+            });
+
+            buttonDelete.setOnClickListener(view -> {
+                if (listener != null && getAbsoluteAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onDeleteClick(users.get(getAbsoluteAdapterPosition()));
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener {
+        void onEditClick(User user);
+        void onDeleteClick(User user);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }
