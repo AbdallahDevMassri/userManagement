@@ -47,12 +47,14 @@ public class AddEditUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add_edit_user);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)
                 , (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         imageViewAvatar =findViewById(R.id.image_view_avatar);
         buttonSelectImage = findViewById(R.id.button_select_image);
         buttonSelectImage.setOnClickListener(new View.OnClickListener() {
@@ -70,15 +72,16 @@ public class AddEditUserActivity extends AppCompatActivity {
                 String last_name =String.valueOf(findViewById(R.id.edit_text_last_name));
                 String email = String.valueOf(findViewById(R.id.edit_text_email));
                 String id = String.valueOf(findViewById(R.id.edit_text_id));
-                //TODO
-                // validate the texts not empty
+                String imageUrl = String.valueOf(R.id.image_view_avatar);
+
+               //TODO Continue validate the inputs !
                 if (TextUtils.isEmpty(first_name) || TextUtils.isEmpty(last_name) || TextUtils.isEmpty(email)) {
                     Toast.makeText(AddEditUserActivity.this,"Please enter all data", Toast.LENGTH_LONG).show();
                     return;
 
                 }
-                //TODO  need to  create the avatar for image
-                User user = new User(id,first_name,last_name,email,null);
+
+                User user = new User(id,first_name,last_name,email,imageUrl);
                 myViewModel.insertUser(user);
                 Toast.makeText(AddEditUserActivity.this,"user saved \n "+first_name+" "+last_name,Toast.LENGTH_LONG).show();
             }

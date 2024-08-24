@@ -17,6 +17,18 @@ public class MyViewModel extends AndroidViewModel {
         repository = new Repository(application);
 
     }
+    //Get users from network
+    public LiveData<List<User>> getUsersFromNetwork(){
+        return repository.getUsersFromNetwork();
+    }
+    // Sync data between network and local database
+    public void syncDataWithNetwork(){
+        repository.syncDataWithNetwork();
+    }
+    // Get users from local database
+    public LiveData<List<User>> getAllUsers() {
+        return repository.getAllUsers();
+    }
     // implementation of the user
 
     public void insertUser(User... user) {
@@ -33,12 +45,6 @@ public class MyViewModel extends AndroidViewModel {
     // delete user by name
     public void deleteUserByName(String name) {
         repository.deleteUserByName(name);
-    }
-
-    // get list of the users
-    public LiveData<List<User>> getAllUsers() {
-
-        return repository.getAllUsers();
     }
 
     // search user by name
