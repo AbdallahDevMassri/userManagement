@@ -1,21 +1,16 @@
 package com.example.usermanagementapp.repository;
 
 import android.app.Application;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-
 import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.database.UserDao;
 import com.example.usermanagementapp.database.UserDatabase;
 import com.example.usermanagementapp.network.ReqResApi;
 import com.example.usermanagementapp.network.RetrofitClient;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,7 +71,7 @@ public class Repository {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                // Handle failure
+
             }
         });
     }

@@ -2,11 +2,11 @@ package com.example.usermanagementapp.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,7 +17,6 @@ import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.viewmodel.MyViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,13 +39,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(userAdapter);
 
         myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
+        myViewModel.getAllUsers();
         myViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
+
             @Override
             public void onChanged(List<User> users) {
-
-                userAdapter.setUsers(users);
-
-
+                if (users != null) {
+                    Log.d("MainActivity", "Number of users: " + users.size());
+                    userAdapter.setUsers(users);
+                } else {
+                    Log.d("MainActivity", "No users found.");
+                }
             }
         });
         userAdapter.setOnItemClickListener(new UserAdapter.OnItemClickListener() {

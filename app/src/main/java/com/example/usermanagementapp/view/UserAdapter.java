@@ -6,14 +6,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.usermanagementapp.R;
 import com.example.usermanagementapp.model.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +41,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return users != null ? users.size() : 0;
     }
 
     public void setUsers(List<User> users) {
@@ -89,6 +86,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public interface OnItemClickListener {
         void onEditClick(User user);
+
         void onDeleteClick(User user);
     }
 

@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.health.connect.datatypes.SleepSessionRecord;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,9 +27,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import com.example.usermanagementapp.R;
 import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.viewmodel.MyViewModel;
+
 import java.io.IOException;
 
 public class AddEditUserActivity extends AppCompatActivity {
@@ -37,10 +40,10 @@ public class AddEditUserActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_CAMERA = 100;
 
     private ImageView imageViewAvatar;
-    private Button buttonSelectImage;
-    Button saveButton;
-
-    MyViewModel myViewModel;
+    private Button buttonSelectImage, saveButton;
+    private EditText editTextFirstName, editTextLastName, editTextEmail, editTextId;
+    private MyViewModel myViewModel;
+    private Uri selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,40 +53,55 @@ public class AddEditUserActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)
                 , (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+                    Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                    return insets;
+                });
 
-        imageViewAvatar =findViewById(R.id.image_view_avatar);
+        imageViewAvatar = findViewById(R.id.image_view_avatar);
         buttonSelectImage = findViewById(R.id.button_select_image);
+        saveButton = findViewById(R.id.button_save);
+        editTextFirstName = findViewById(R.id.edit_text_first_name);
+        editTextLastName = findViewById(R.id.edit_text_last_name);
+        editTextEmail = findViewById(R.id.edit_text_email);
+        editTextId = findViewById(R.id.edit_text_id);
+        imageViewAvatar = findViewById(R.id.image_view_avatar);
+
+        myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
         buttonSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showImagePickerDialog();
             }
         });
-        myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
-        saveButton = findViewById(R.id.button_save);
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String first_name = String.valueOf(findViewById(R.id.edit_text_first_name));
-                String last_name =String.valueOf(findViewById(R.id.edit_text_last_name));
-                String email = String.valueOf(findViewById(R.id.edit_text_email));
-                String id = String.valueOf(findViewById(R.id.edit_text_id));
-                String imageUrl = String.valueOf(R.id.image_view_avatar);
+                String first_name = editTextFirstName.getText().toString().trim();
+                String last_name = editTextLastName.getText().toString().trim();
+                String email = editTextEmail.getText().toString().trim();
+                String id = editTextId.getText().toString().trim();
+                String imageUrl = selectedImage != null ? selectedImage.toString() : "";
 
-               //TODO Continue validate the inputs !
+                //TODO Continue validate the inputs !
                 if (TextUtils.isEmpty(first_name) || TextUtils.isEmpty(last_name) || TextUtils.isEmpty(email)) {
-                    Toast.makeText(AddEditUserActivity.this,"Please enter all data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddEditUserActivity.this, "Please enter all data", Toast.LENGTH_LONG).show();
                     return;
 
                 }
 
-                User user = new User(id,first_name,last_name,email,imageUrl);
+                User user = new User(id, first_name, last_name, email, imageUrl);
+//                Toast.makeText(AddEditUserActivity.this,  first_name , Toast.LENGTH_LONG).show();
+//                Toast.makeText(AddEditUserActivity.this,  last_name , Toast.LENGTH_LONG).show();
+//                Toast.makeText(AddEditUserActivity.this,  id , Toast.LENGTH_LONG).show();
+//                Toast.makeText(AddEditUserActivity.this, email, Toast.LENGTH_LONG).show();
+//                Toast.makeText(AddEditUserActivity.this, imageUrl, Toast.LENGTH_LONG).show();
                 myViewModel.insertUser(user);
-                Toast.makeText(AddEditUserActivity.this,"user saved \n "+first_name+" "+last_name,Toast.LENGTH_LONG).show();
+
+                Toast.makeText(AddEditUserActivity.this,"you added "+user.getFirstName()+" successfully", Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(AddEditUserActivity.this,MainActivity.class);
+//                startActivity(intent);
             }
         });
     }
@@ -105,6 +123,7 @@ public class AddEditUserActivity extends AppCompatActivity {
             } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 imageViewAvatar.setImageBitmap(photo);
+                //TODO
                 // Save the image or upload it to the server
             }
         }
@@ -124,6 +143,7 @@ public class AddEditUserActivity extends AppCompatActivity {
                 startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
             } else {
                 // Permission denied
+                Toast.makeText(AddEditUserActivity.this,"Permission denied",Toast.LENGTH_LONG).show();
             }
         }
     }
