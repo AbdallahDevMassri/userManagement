@@ -20,6 +20,7 @@ public class Repository {
     private UserDao userDao;
     private ReqResApi reqResApi;
     private final ExecutorService executorService;
+    private final LiveData<List<User>> allUsers;
 
 
     public Repository(Application application) {
@@ -27,6 +28,8 @@ public class Repository {
         userDao = db.userDao();
         reqResApi = RetrofitClient.getClient().create(ReqResApi.class);
         executorService = Executors.newSingleThreadExecutor();
+        // Fetch all users from the local database
+        allUsers = userDao.getAllUsers();
     }
 
     //fetch users from network and save to local database
@@ -42,11 +45,15 @@ public class Repository {
                         userDao.insertUser(users.toArray(new User[0]));
                         liveData.postValue(users);
                     });
+                }else {
+                    // If the response is not successful, fallback to local database
+                    liveData.postValue(getAllUsers().getValue());
                 }
             }
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                liveData.postValue(null); // handle failure
+                // If the network request fails, fallback to local database
+                liveData.postValue(getAllUsers().getValue());
             }
         });
         return liveData;

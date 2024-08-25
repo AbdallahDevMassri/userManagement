@@ -42,8 +42,8 @@ public class AddEditUserActivity extends AppCompatActivity {
     private ImageView imageViewAvatar;
     private Button buttonSelectImage, saveButton;
     private EditText editTextFirstName, editTextLastName, editTextEmail, editTextId;
-    private MyViewModel myViewModel;
     private Uri selectedImage;
+    private MyViewModel myViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,12 @@ public class AddEditUserActivity extends AppCompatActivity {
         imageViewAvatar = findViewById(R.id.image_view_avatar);
 
         myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
+        Intent intent = getIntent();
+        if (intent.hasExtra("user")) {
+            User user = (User) intent.getSerializableExtra("user");
+            fillUserData(user);
+        }
+
         buttonSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,33 +84,79 @@ public class AddEditUserActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String first_name = editTextFirstName.getText().toString().trim();
-                String last_name = editTextLastName.getText().toString().trim();
-                String email = editTextEmail.getText().toString().trim();
-                String id = editTextId.getText().toString().trim();
-                String imageUrl = selectedImage != null ? selectedImage.toString() : "";
-
-                //TODO Continue validate the inputs !
-                if (TextUtils.isEmpty(first_name) || TextUtils.isEmpty(last_name) || TextUtils.isEmpty(email)) {
-                    Toast.makeText(AddEditUserActivity.this, "Please enter all data", Toast.LENGTH_LONG).show();
-                    return;
-
-                }
-
-                User user = new User(id, first_name, last_name, email, imageUrl);
-//                Toast.makeText(AddEditUserActivity.this,  first_name , Toast.LENGTH_LONG).show();
-//                Toast.makeText(AddEditUserActivity.this,  last_name , Toast.LENGTH_LONG).show();
-//                Toast.makeText(AddEditUserActivity.this,  id , Toast.LENGTH_LONG).show();
-//                Toast.makeText(AddEditUserActivity.this, email, Toast.LENGTH_LONG).show();
-//                Toast.makeText(AddEditUserActivity.this, imageUrl, Toast.LENGTH_LONG).show();
-                myViewModel.insertUser(user);
-
-                Toast.makeText(AddEditUserActivity.this,"you added "+user.getFirstName()+" successfully", Toast.LENGTH_LONG).show();
+//                String first_name = editTextFirstName.getText().toString().trim();
+//                String last_name = editTextLastName.getText().toString().trim();
+//                String email = editTextEmail.getText().toString().trim();
+//                String id = editTextId.getText().toString().trim();
+//                String imageUrl = selectedImage != null ? selectedImage.toString() : "";
+//
+//                //TODO Continue validate the inputs !
+//                if (TextUtils.isEmpty(first_name) || TextUtils.isEmpty(last_name) || TextUtils.isEmpty(email)) {
+//                    Toast.makeText(AddEditUserActivity.this, "Please enter all data", Toast.LENGTH_LONG).show();
+//                    return;
+//
+//                }
+//
+//                User user = new User(id, first_name, last_name, email, imageUrl);
+//                myViewModel.insertUser(user);
+//
+//                Toast.makeText(AddEditUserActivity.this,"you added "+user.getFirstName()+" successfully", Toast.LENGTH_LONG).show();
 //                Intent intent = new Intent(AddEditUserActivity.this,MainActivity.class);
 //                startActivity(intent);
+                saveUser();
             }
         });
     }
+    private void fillUserData(User user) {
+        if (user != null) {
+            editTextFirstName.setText(user.getFirstName() != null ? user.getFirstName() : "");
+            editTextLastName.setText(user.getLastName() != null ? user.getLastName() : "");
+            editTextEmail.setText(user.getEmail() != null ? user.getEmail() : "");
+            editTextId.setText(String.valueOf(user.getId()));
+            if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+                imageViewAvatar.setImageURI(Uri.parse(user.getAvatar()));
+                selectedImage = Uri.parse(user.getAvatar());
+            }
+        }
+    }
+    private void saveUser() {
+        String first_name = editTextFirstName.getText().toString().trim();
+        String last_name = editTextLastName.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
+        String userID = editTextId.getText().toString().trim();
+        String imageUrl = selectedImage != null ? selectedImage.toString() : "";
+
+        if (TextUtils.isEmpty(first_name) || TextUtils.isEmpty(last_name) || TextUtils.isEmpty(email)) {
+            Toast.makeText(AddEditUserActivity.this, "Please enter all data", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        User user = new User(userID, first_name, last_name, email, imageUrl);
+
+        if (getIntent().hasExtra("user")) {
+            int userId = ((User) getIntent().getSerializableExtra("user")).getId();
+
+            //update existing user
+            myViewModel.getUsersById(userId).observe(this, existingUser -> {
+                if (existingUser != null) {
+                    user.setId(existingUser.getId());
+                    myViewModel.updateUser(user);
+                    Toast.makeText(AddEditUserActivity.this, "User updated successfully", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(AddEditUserActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            myViewModel.insertUser(user);
+            Toast.makeText(AddEditUserActivity.this, "User added successfully", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(AddEditUserActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+    }
+
+
+
 
     private void showImagePickerDialog() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -115,11 +167,10 @@ public class AddEditUserActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && data != null) {
             if (requestCode == REQUEST_IMAGE_PICK) {
-                Uri selectedImage = data.getData();
+                selectedImage = data.getData();
                 imageViewAvatar.setImageURI(selectedImage);
-                // Save the image URI or convert it to a path if necessary
             } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 imageViewAvatar.setImageBitmap(photo);

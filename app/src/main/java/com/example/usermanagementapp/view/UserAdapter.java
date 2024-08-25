@@ -1,5 +1,6 @@
 package com.example.usermanagementapp.view;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         User currentUser = users.get(position);
         holder.textViewName.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
         holder.textViewEmail.setText(currentUser.getEmail());
-        // Load user avatar with Glide
+ //        Load user avatar with Glide
         Glide.with(holder.itemView.getContext())
-                .load(currentUser.getAvatar())
+                .load(Uri.parse(currentUser.getAvatar()))
                 .placeholder(R.drawable.placeholder_avatar)
                 .into(holder.imageViewAvatar);
+//        holder.imageViewAvatar.setImageURI(currentUser.getAvatar() != null ? Uri.parse(currentUser.getAvatar()) : null);
     }
 
     @Override

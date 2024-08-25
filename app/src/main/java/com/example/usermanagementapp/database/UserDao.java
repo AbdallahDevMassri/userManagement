@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Dao
 public interface UserDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertUser(User... user);
 
     @Update
@@ -34,6 +35,6 @@ public interface UserDao {
     LiveData<List<User>>searchUsers(String name);
        // search user by Id
     @Query(("select * from user_table where userID = :userId"))
-    LiveData<List<User>> getUsersById(int userId);
+    LiveData<User> getUsersById(int userId);
 
 }

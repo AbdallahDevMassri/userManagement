@@ -39,23 +39,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(userAdapter);
 
         myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
-        myViewModel.getAllUsers();
-        myViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
 
-            @Override
-            public void onChanged(List<User> users) {
-                if (users != null) {
-                    Log.d("MainActivity", "Number of users: " + users.size());
-                    userAdapter.setUsers(users);
-                } else {
-                    Log.d("MainActivity", "No users found.");
-                }
-            }
-        });
+        fetchUsers();
+
         userAdapter.setOnItemClickListener(new UserAdapter.OnItemClickListener() {
             @Override
             public void onEditClick(User user) {
-                // Handle the edit action
+                // Start AddEditUserActivity and pass the selected user's data
                 Intent intent = new Intent(MainActivity.this, AddEditUserActivity.class);
                 intent.putExtra("user", user);
                 startActivity(intent);
@@ -65,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDeleteClick(User user) {
                 myViewModel.deleteUser(user);
                 Toast.makeText(MainActivity.this, "User deleted", Toast.LENGTH_SHORT).show();
+                fetchUsers();
             }
         });
 
@@ -74,6 +65,26 @@ public class MainActivity extends AppCompatActivity {
         addButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddEditUserActivity.class);
             startActivity(intent);
+        });
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchUsers();
+    }
+    private void fetchUsers() {
+        myViewModel.getUsersFromNetwork().observe(this, users -> {
+            if (users != null && !users.isEmpty()) {
+                userAdapter.setUsers(users);
+            } else {
+                Toast.makeText(MainActivity.this, "Unable to fetch users from the network. Showing local data.", Toast.LENGTH_LONG).show();
+                myViewModel.getAllUsers().observe(this, localUsers -> {
+                    if (localUsers != null && !localUsers.isEmpty()) {
+                        userAdapter.setUsers(localUsers);
+                    }
+                });
+            }
         });
     }
 
