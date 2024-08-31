@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.usermanagementapp.database.UserDao;
+import com.example.usermanagementapp.database.UserDatabase;
 import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.repository.Repository;
 
@@ -15,13 +16,14 @@ import java.util.List;
 
 public class MyViewModel extends AndroidViewModel {
     private UserDao userDao;
-    Repository repository;
+    private Repository repository;
     private LiveData<List<User>> allUsers;
 
     public MyViewModel(@NonNull Application application) {
         super(application);
         repository = new Repository(application);
-
+        UserDatabase database = UserDatabase.getDatabase(application);
+        userDao = database.userDao();
 
     }
 
@@ -67,8 +69,7 @@ public class MyViewModel extends AndroidViewModel {
     // search user by Id
     public LiveData<User> getUsersById(int userId) {
 
-//        return UserDao.getUsersById(userId);
-        return userDao.getUsersById(userId);
+        return repository.getUsersById(userId);
     }
 
 

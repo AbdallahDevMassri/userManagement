@@ -24,16 +24,19 @@ public interface UserDao {
     @Delete
     void deleteUser(User... user);
 
+    //-----Queries for future use ---------
     @Query("delete from user_table where firstName  = :name")
     void deleteUserByName(String name);
 
     // get list of the users
     @Query("SELECT * FROM user_table ORDER BY id ASC")
     LiveData<List<User>> getAllUsers();
-   // search user by name
+
+    // search user by name
     @Query("select *from user_table where firstName like '%' || :name || '%' ")
-    LiveData<List<User>>searchUsers(String name);
-       // search user by Id
+    LiveData<List<User>> searchUsers(String name);
+
+    // search user by Id
     @Query(("select * from user_table where userID = :userId"))
     LiveData<User> getUsersById(int userId);
 

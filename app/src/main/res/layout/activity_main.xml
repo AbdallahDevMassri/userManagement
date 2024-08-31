@@ -12,6 +12,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="700dp"
+
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/add_item_fab"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,8 +28,10 @@
         app:layout_constraintTop_toBottomOf="@id/recycler_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
+      android:layout_marginTop="8dp"
+
         android:layout_marginBottom="8dp"
+
         android:contentDescription="@string/add_user"
         app:srcCompat="@android:drawable/ic_input_add"
         app:backgroundTint="@color/colorPrimary"

@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.usermanagementapp.R;
 import com.example.usermanagementapp.model.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +36,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         User currentUser = users.get(position);
         holder.textViewName.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
         holder.textViewEmail.setText(currentUser.getEmail());
- //        Load user avatar with Glide
-        Glide.with(holder.itemView.getContext())
-                .load(Uri.parse(currentUser.getAvatar()))
-                .placeholder(R.drawable.placeholder_avatar)
-                .into(holder.imageViewAvatar);
-//        holder.imageViewAvatar.setImageURI(currentUser.getAvatar() != null ? Uri.parse(currentUser.getAvatar()) : null);
+        String avatarUrl = currentUser.getAvatar();
+        if (avatarUrl != null && !avatarUrl.isEmpty()) {
+            // Load user avatar with Glide
+            Glide.with(holder.itemView.getContext())
+                    .load(Uri.parse(avatarUrl))
+                    .placeholder(R.drawable.placeholder_avatar)
+                    .into(holder.imageViewAvatar);
+        } else {
+            // Load a placeholder image if avatarUrl is null or empty
+            Glide.with(holder.itemView.getContext())
+                    .load(R.drawable.placeholder_avatar) // Use a local drawable as a placeholder
+                    .into(holder.imageViewAvatar);
+        }
+
     }
 
     @Override

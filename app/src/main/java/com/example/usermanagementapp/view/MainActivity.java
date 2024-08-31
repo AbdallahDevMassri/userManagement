@@ -2,12 +2,10 @@ package com.example.usermanagementapp.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +15,6 @@ import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.viewmodel.MyViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     MyViewModel myViewModel;
@@ -68,11 +65,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         fetchUsers();
     }
+
     private void fetchUsers() {
         myViewModel.getUsersFromNetwork().observe(this, users -> {
             if (users != null && !users.isEmpty()) {

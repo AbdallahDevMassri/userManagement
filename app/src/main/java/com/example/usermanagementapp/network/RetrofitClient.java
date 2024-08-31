@@ -10,6 +10,7 @@ public class RetrofitClient {
     public static Retrofit getClient() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
+                    //TODO change the url as u need
                     .baseUrl("https://reqres.in/api/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

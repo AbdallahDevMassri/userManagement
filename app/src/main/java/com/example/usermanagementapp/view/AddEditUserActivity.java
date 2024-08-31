@@ -5,11 +5,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.health.connect.datatypes.SleepSessionRecord;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -24,15 +22,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.example.usermanagementapp.R;
 import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.viewmodel.MyViewModel;
 
-import java.io.IOException;
+import java.util.Objects;
 
 public class AddEditUserActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_PICK = 1;
@@ -84,29 +80,12 @@ public class AddEditUserActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String first_name = editTextFirstName.getText().toString().trim();
-//                String last_name = editTextLastName.getText().toString().trim();
-//                String email = editTextEmail.getText().toString().trim();
-//                String id = editTextId.getText().toString().trim();
-//                String imageUrl = selectedImage != null ? selectedImage.toString() : "";
-//
-//                //TODO Continue validate the inputs !
-//                if (TextUtils.isEmpty(first_name) || TextUtils.isEmpty(last_name) || TextUtils.isEmpty(email)) {
-//                    Toast.makeText(AddEditUserActivity.this, "Please enter all data", Toast.LENGTH_LONG).show();
-//                    return;
-//
-//                }
-//
-//                User user = new User(id, first_name, last_name, email, imageUrl);
-//                myViewModel.insertUser(user);
-//
-//                Toast.makeText(AddEditUserActivity.this,"you added "+user.getFirstName()+" successfully", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(AddEditUserActivity.this,MainActivity.class);
-//                startActivity(intent);
+
                 saveUser();
             }
         });
     }
+
     private void fillUserData(User user) {
         if (user != null) {
             editTextFirstName.setText(user.getFirstName() != null ? user.getFirstName() : "");
@@ -119,6 +98,7 @@ public class AddEditUserActivity extends AppCompatActivity {
             }
         }
     }
+
     private void saveUser() {
         String first_name = editTextFirstName.getText().toString().trim();
         String last_name = editTextLastName.getText().toString().trim();
@@ -132,30 +112,26 @@ public class AddEditUserActivity extends AppCompatActivity {
         }
 
         User user = new User(userID, first_name, last_name, email, imageUrl);
+        user.setId(Integer.parseInt(userID));
 
         if (getIntent().hasExtra("user")) {
-            int userId = ((User) getIntent().getSerializableExtra("user")).getId();
+
+            int userId = ((User) Objects.requireNonNull(getIntent().getSerializableExtra("user"))).getId();
 
             //update existing user
-            myViewModel.getUsersById(userId).observe(this, existingUser -> {
-                if (existingUser != null) {
-                    user.setId(existingUser.getId());
-                    myViewModel.updateUser(user);
-                    Toast.makeText(AddEditUserActivity.this, "User updated successfully", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(AddEditUserActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            myViewModel.insertUser(user);
-            Toast.makeText(AddEditUserActivity.this, "User added successfully", Toast.LENGTH_LONG).show();
+            if (getIntent().hasExtra("user")) {
+                // Update existing user
+                myViewModel.updateUser(user);
+                Toast.makeText(AddEditUserActivity.this, "User updated successfully", Toast.LENGTH_LONG).show();
+            } else {
+                // Add new user
+                myViewModel.insertUser(user);
+                Toast.makeText(AddEditUserActivity.this, "User added successfully", Toast.LENGTH_LONG).show();
+            }
             Intent intent = new Intent(AddEditUserActivity.this, MainActivity.class);
             startActivity(intent);
         }
     }
-
-
 
 
     private void showImagePickerDialog() {
@@ -194,7 +170,7 @@ public class AddEditUserActivity extends AppCompatActivity {
                 startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
             } else {
                 // Permission denied
-                Toast.makeText(AddEditUserActivity.this,"Permission denied",Toast.LENGTH_LONG).show();
+                Toast.makeText(AddEditUserActivity.this, "Permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }

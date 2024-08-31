@@ -1,16 +1,20 @@
 package com.example.usermanagementapp.repository;
 
 import android.app.Application;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.usermanagementapp.model.User;
 import com.example.usermanagementapp.database.UserDao;
 import com.example.usermanagementapp.database.UserDatabase;
 import com.example.usermanagementapp.network.ReqResApi;
 import com.example.usermanagementapp.network.RetrofitClient;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,11 +49,12 @@ public class Repository {
                         userDao.insertUser(users.toArray(new User[0]));
                         liveData.postValue(users);
                     });
-                }else {
+                } else {
                     // If the response is not successful, fallback to local database
                     liveData.postValue(getAllUsers().getValue());
                 }
             }
+
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 // If the network request fails, fallback to local database
@@ -60,9 +65,10 @@ public class Repository {
     }
 
     // Get all users (local database)
-    public LiveData<List<User>> getAllUsers(){
+    public LiveData<List<User>> getAllUsers() {
         return userDao.getAllUsers();
     }
+
     // Sync data: fetch from network and update local database
     public void syncDataWithNetwork() {
         reqResApi.getUsers().enqueue(new Callback<List<User>>() {
@@ -111,9 +117,9 @@ public class Repository {
 
     // search user by Id
 
-    public LiveData<List<User>> getUsersById(int userId) {
+    public LiveData<User> getUsersById(int userId) {
 
-        return getUsersById(userId);
+        return userDao.getUsersById(userId);
     }
 
 }
